@@ -1,0 +1,133 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+model User{
+  id String @id @default(cuid())
+  name String
+  email String @unique
+  password String
+  taskAssignments TaskAssignee[]
+  boardsOwned Board[] @relation("BoardOwner")
+  boardMemberships BoardMember[]
+  notifications Notification[]
+  createdAt DateTime @default(now())
+  @@index([email])
+}
+model Board{
+  id String @id @default(cuid())
+  title String
+  owner User @relation("BoardOwner",fields:[ownerId],references:[id])
+  ownerId String
+  lists List[]
+  members BoardMember[]
+  createdAt DateTime @default(now())
+  @@index([ownerId])
+}
+model BoardMember{
+  id String @id @default(cuid())
+  board Board @relation(fields:[boardId],references:[id],onDelete:Cascade)
+  boardId String
+  user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+  userId String
+  role BoardRole @default(MEMBER)
+  @@unique([boardId,userId])
+  @@index([userId])
+}
+enum BoardRole{
+  MEMBER
+}
+model List{
+  id String @id @default(cuid())
+  title String
+  board Board @relation(fields:[boardId],references:[id],onDelete:Cascade)
+  boardId String
+  order Int
+  tasks Task[]
+  @@index([boardId,order])
+}
+model Task{
+  id String @id @default(cuid())
+  title String
+  description String?
+  list List @relation(fields:[listId],references:[id],onDelete:Cascade)
+  listId String
+  order Int
+  priority Priority @default(MEDIUM)
+  status TaskStatus @default(TODO)
+  assignees TaskAssignee[]
+  activity ActivityLog[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([listId,order])
+  @@index([title])
+}
+enum Priority{
+  LOW
+  MEDIUM
+  HIGH
+}
+enum TaskStatus{
+  TODO
+  IN_PROGRESS
+  DONE
+}
+model TaskAssignee{
+  id String @id @default(cuid())
+  task Task @relation(fields:[taskId],references:[id],onDelete:Cascade)
+  taskId String
+  user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+  userId String
+  @@unique([taskId,userId])
+  @@index([userId])
+}
+model ActivityLog{
+  id String @id @default(cuid())
+  action ActivityAction
+  payload Json?
+  boardId String?
+  task Task? @relation(fields:[taskId],references:[id],onDelete:Cascade)
+  taskId String?
+  userId String
+  createdAt DateTime @default(now())
+  @@index([boardId])
+  @@index([taskId])
+  @@index([userId])
+}
+enum ActivityAction{
+  TASK_CREATED
+  TASK_UPDATED
+  TASK_MOVED
+  TASK_DELETED
+  TASK_ASSIGNED
+  LIST_CREATED
+  LIST_DELETED
+  BOARD_CREATED
+  BOARD_DELETED
+}
+model Notification{
+  id String @id @default(cuid())
+  user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+  userId String
+  type NotificationType
+  payload Json?
+  read Boolean @default(false)
+  createdAt DateTime @default(now())
+  @@index([userId,read])
+}
+enum NotificationType {
+  TASK_ASSIGNED
+  TASK_MOVED
+  TASK_UPDATED
+  BOARD_INVITE
+}
