@@ -1,65 +1,93 @@
-import Image from "next/image";
-
-export default function Home() {
+"use client";
+import Navbar from "@/components/Navbar";
+import { ArrowUpRight } from "lucide-react";
+export default function LandingPage() {
+  const AboutCards = [
+    {
+      id: 1,
+      title: "Seamless Workflow Orchestration",
+      desc: "Design and manage your workflow from start to finish. Stay aligned, organized, and efficient without unnecessary complexity.",
+    },
+    {
+      id: 2,
+      title: "Quick Setup, Zero Hassle",
+      desc: "Start in minutes with an intuitive interface. No complicated onboarding, just instant productivity.",
+    },
+    {
+      id: 3,
+      title: "Effortless Team Collaboration",
+      desc: "Collaborate, communicate, and execute tasks smoothly. Keep everyone in sync with minimal effort.",
+    },
+    {
+      id: 4,
+      title: "Organized & Scalable Productivity",
+      desc: "Whether you're managing small projects or scaling operations, maintain clarity and control at every stage.",
+    },
+  ];
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <main className="bg-white">
+      <Navbar />
+
+      {/* ---------- HERO SECTION ---------- */}
+      <section
+        id="home"
+        className="min-h-screen flex items-center justify-center bg-white px-6 sm:px-10"
+      >
+        <div className="mx-0 my-3 w-full text-center rounded-2xl bg-linear-to-b from-amber-100 via-orange-200 to-orange-300">
+          <div className="min-h-160 items-center justify-center flex flex-col space-y-8">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight">
+              Elevate your projects with precision.
+            </h1>
+
+            <p className="text-gray-600 text-sm sm:text-base md:text-lg">
+              A modern platform that simplifies tasks, boosts focus, and drives
+              results. Streamline smarter. Achieve faster.
+            </p>
+
+            <button
+              onClick={() =>
+                document
+                  .getElementById("about")
+                  ?.scrollIntoView({ behavior: "smooth" })
+              }
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-orange-600 text-white text-sm sm:text-base hover:bg-orange-700 transition"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+              Learn More <ArrowUpRight size={18} />
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* ---------- ABOUT SECTION ---------- */}
+      <section
+        id="about"
+        className="px-6 sm:px-10 md:px-20 py-16 max-w-6xl mx-auto"
+      >
+        <div className="text-center mb-10 space-y-3">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold">
+            Empowering Teams to Stay Organized & Achieve More
+          </h2>
+
+          <p className="text-orange-600 text-sm sm:text-base">
+            From task management to workflow clarity, everything works together
+            seamlessly.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {AboutCards.map((card) => (
+            <div
+              key={card.id}
+              className="border border-orange-500 rounded-xl p-5 hover:shadow-md transition"
+            >
+              <h3 className="font-semibold text-orange-800 text-lg mb-2">
+                {card.title}
+              </h3>
+              <p className="text-gray-600 text-sm sm:text-base">{card.desc}</p>
+            </div>
+          ))}
         </div>
-      </main>
-    </div>
+      </section>
+    </main>
   );
 }
